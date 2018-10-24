@@ -1,6 +1,6 @@
 # A Docker container for OpenGrok!
 
-## OpenGrok release from oficial source:
+## OpenGrok release from official source:
 
 Directly downloaded from official source:
 https://github.com/OpenGrok/OpenGrok/releases/tag/${RELEASE}
