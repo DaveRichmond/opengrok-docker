@@ -1,21 +1,24 @@
-FROM tomcat:9-jre8
-MAINTAINER Nathan Guimaraes "dev.nathan.guimaraes@gmail.com"
+ARG TOMCAT_VERSION="9"
+ARG JRE_VERSION="8"
+
+FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
+MAINTAINER David Richmond <dave@prstat.org>
+
+ARG OPENGROK_RELEASE="1.0"
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && \
+	apt install -y exuberant-ctags git \
+		subversion mercurial \
+		unzip inotify-tools
 
 #PREPARING OPENGROK BINARIES AND FOLDERS
-ADD https://github.com/oracle/OpenGrok/releases/download/1.0/opengrok-1.0.tar.gz /opengrok.tar.gz
+ADD https://github.com/oracle/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /opengrok.tar.gz
 RUN tar -zxvf /opengrok.tar.gz && mv opengrok-* /opengrok && chmod -R +x /opengrok/bin && \
     mkdir /src && \
     mkdir /data && \
     ln -s /data /var/opengrok && \
     ln -s /src /var/opengrok/src
-
-#INSTALLING DEPENDENCIES
-#SSH configuration
-RUN apt-get update && apt-get install -y exuberant-ctags git subversion mercurial unzip openssh-server inotify-tools && \
-    mkdir /var/run/sshd && \
-    echo 'root:root' |chpasswd && \
-    sed -ri 's/[ #]*PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    sed -ri 's/[ #]*UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 
 #ENVIRONMENT VARIABLES CONFIGURATION
 ENV SRC_ROOT /src
@@ -47,8 +50,10 @@ RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 ADD scripts /scripts
 RUN chmod -R +x /scripts
 
+# export volumes
+VOLUME /var/opengrok/data
+
 # run
 WORKDIR $CATALINA_HOME
 EXPOSE 8080
-EXPOSE 22
 CMD ["/scripts/start.sh"]
