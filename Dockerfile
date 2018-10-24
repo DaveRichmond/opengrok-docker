@@ -4,17 +4,28 @@ ARG JRE_VERSION="8"
 FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
 MAINTAINER David Richmond <dave@prstat.org>
 
-ARG OPENGROK_RELEASE="1.0"
+ARG OPENGROK_RELEASE="1.1-rc65"
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
-	apt install -y exuberant-ctags git \
+	apt install -y git \
 		subversion mercurial \
-		unzip inotify-tools
+		unzip inotify-tools \
+		python3-pip build-essential
+
+# install universal ctags (not available upstream)
+WORKDIR /tmp
+RUN apt install -y build-essential autoconf libtool gettext \
+		pkg-config && \
+	git clone --depth 1 https://github.com/universal-ctags/ctags && \
+	cd ctags && \
+	./autogen.sh && \
+	./configure && \
+	make && make install && \
+	cd .. && rm -Rf ctags
 
 #PREPARING OPENGROK BINARIES AND FOLDERS
 ADD https://github.com/oracle/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /opengrok.tar.gz
-RUN tar -zxvf /opengrok.tar.gz && mv opengrok-* /opengrok && chmod -R +x /opengrok/bin && \
+RUN tar -zxvf /opengrok.tar.gz && mv opengrok-* /opengrok && \
     mkdir /src && \
     mkdir /data && \
     ln -s /data /var/opengrok && \
@@ -34,10 +45,16 @@ ENV CATALINA_TMPDIR /usr/local/tomcat/temp
 ENV JRE_HOME /usr
 ENV CLASSPATH /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar
 
+# add our scripts
+ADD scripts /scripts
+RUN chmod -R +x /scripts
 
 # custom deployment to / with redirect from /source
 RUN rm -rf /usr/local/tomcat/webapps/* && \
-    /opengrok/bin/OpenGrok deploy && \
+    python3 -m pip install /opengrok/tools/opengrok-tools-*.tar.gz && \
+    mkdir -p /var/opengrok/etc/ && \
+    opengrok-deploy -c /var/opengrok/etc/configuration.xml -D /opengrok/lib/source.war \
+	/usr/local/tomcat/webapps && \
     mv "/usr/local/tomcat/webapps/source.war" "/usr/local/tomcat/webapps/ROOT.war" && \
     mkdir "/usr/local/tomcat/webapps/source" && \
     echo '<% response.sendRedirect("/"); %>' > "/usr/local/tomcat/webapps/source/index.jsp"
@@ -46,12 +63,8 @@ RUN rm -rf /usr/local/tomcat/webapps/* && \
 ADD logging.properties /usr/local/tomcat/conf/logging.properties
 RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 
-# add our scripts
-ADD scripts /scripts
-RUN chmod -R +x /scripts
-
 # export volumes
-VOLUME /var/opengrok/data
+#VOLUME /var/opengrok/data
 
 # run
 WORKDIR $CATALINA_HOME
