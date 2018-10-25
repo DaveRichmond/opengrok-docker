@@ -31,6 +31,19 @@ Setting `REINDEX` to `0` will disable automatic indexing. You can manually trigg
 
     docker exec <container> /scripts/index.sh
 
+Docker compose can also be used. An example docker-compose.yml:
+```yaml
+version: 3
+services:
+  grok:
+    restart: always
+    image: daverichmond/opengrok:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - "<path to source>:/src"
+```
+
 ## OpenGrok Web-Interface
 
 The container has OpenGrok as default web app installed (accessible directly from `/`). With the above container setup, you can find it running on

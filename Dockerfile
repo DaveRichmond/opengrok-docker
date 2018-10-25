@@ -1,5 +1,5 @@
 ARG TOMCAT_VERSION="9"
-ARG JRE_VERSION="8"
+ARG JRE_VERSION="10"
 
 FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
 MAINTAINER David Richmond <dave@prstat.org>
@@ -64,7 +64,7 @@ ADD logging.properties /usr/local/tomcat/conf/logging.properties
 RUN sed -i -e 's/Valve/Disabled/' /usr/local/tomcat/conf/server.xml
 
 # export volumes
-#VOLUME /var/opengrok/data
+VOLUME /var/opengrok/data
 
 # run
 WORKDIR $CATALINA_HOME
