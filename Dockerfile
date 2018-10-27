@@ -4,13 +4,14 @@ ARG JRE_VERSION="10"
 FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
 MAINTAINER David Richmond <dave@prstat.org>
 
-ARG OPENGROK_RELEASE="1.1-rc65"
+ARG OPENGROK_RELEASE="1.1-rc68"
 
 RUN apt update && \
 	apt install -y git \
 		subversion mercurial \
 		unzip inotify-tools \
-		python3-pip build-essential
+		python3-pip build-essential && \
+	apt clean
 
 # install universal ctags (not available upstream)
 WORKDIR /tmp
@@ -21,7 +22,7 @@ RUN apt install -y build-essential autoconf libtool gettext \
 	./autogen.sh && \
 	./configure && \
 	make && make install && \
-	cd .. && rm -Rf ctags
+	cd .. && rm -Rf ctags && apt clean
 
 #PREPARING OPENGROK BINARIES AND FOLDERS
 ADD https://github.com/oracle/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /opengrok.tar.gz
