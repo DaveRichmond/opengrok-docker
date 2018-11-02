@@ -7,7 +7,7 @@ https://github.com/OpenGrok/OpenGrok/releases/tag/${RELEASE}
 
 You can learn more about OpenGrok at http://oracle.github.io/opengrok/
 
-The container is available from DockerHub at https://hub.docker.com/r/opengrok/docker/
+The container is available from DockerHub at https://hub.docker.com/r/daverichmond/opengrok/
 
 ## Additional info about the container:
 
