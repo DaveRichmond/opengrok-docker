@@ -52,7 +52,7 @@ RUN chmod -R +x /scripts
 
 # custom deployment to / with redirect from /source
 RUN rm -rf /usr/local/tomcat/webapps/* && \
-    python3 -m pip install /opengrok/tools/opengrok-tools-*.tar.gz && \
+    python3 -m pip install /opengrok/tools/opengrok-tools.tar.gz && \
     mkdir -p /var/opengrok/etc/ && \
     opengrok-deploy -c /var/opengrok/etc/configuration.xml -D /opengrok/lib/source.war \
 	/usr/local/tomcat/webapps && \
