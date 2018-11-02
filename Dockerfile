@@ -4,7 +4,7 @@ ARG JRE_VERSION="10"
 FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
 MAINTAINER David Richmond <dave@prstat.org>
 
-ARG OPENGROK_RELEASE="1.1-rc68"
+ARG OPENGROK_RELEASE="1.1-rc69"
 
 RUN apt update && \
 	apt install -y git \
