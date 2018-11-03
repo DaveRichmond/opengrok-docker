@@ -4,8 +4,6 @@ ARG JRE_VERSION="10"
 FROM tomcat:${TOMCAT_VERSION}-jre${JRE_VERSION}
 MAINTAINER David Richmond <dave@prstat.org>
 
-ARG OPENGROK_RELEASE="1.1-rc69"
-
 RUN apt update && \
 	apt install -y git \
 		subversion mercurial \
@@ -25,6 +23,7 @@ RUN apt install -y build-essential autoconf libtool gettext \
 	cd .. && rm -Rf ctags && apt clean
 
 #PREPARING OPENGROK BINARIES AND FOLDERS
+ARG OPENGROK_RELEASE="1.1-rc70"
 ADD https://github.com/oracle/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /opengrok.tar.gz
 RUN tar -zxvf /opengrok.tar.gz && mv opengrok-* /opengrok && \
     mkdir /src && \
