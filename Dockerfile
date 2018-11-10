@@ -53,9 +53,9 @@ RUN chmod -R +x /scripts
 RUN rm -rf /usr/local/tomcat/webapps/* && \
     python3 -m pip install /opengrok/tools/opengrok-tools.tar.gz && \
     mkdir -p /var/opengrok/etc/ && \
-    opengrok-deploy -c /var/opengrok/etc/configuration.xml -D /opengrok/lib/source.war \
-	/usr/local/tomcat/webapps && \
-    mv "/usr/local/tomcat/webapps/source.war" "/usr/local/tomcat/webapps/ROOT.war" && \
+    opengrok-deploy -c /var/opengrok/etc/configuration.xml \
+	/opengrok/lib/source.war \
+	/usr/local/tomcat/webapps/ROOT.war && \
     mkdir "/usr/local/tomcat/webapps/source" && \
     echo '<% response.sendRedirect("/"); %>' > "/usr/local/tomcat/webapps/source/index.jsp"
 
