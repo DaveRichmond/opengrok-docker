@@ -3,7 +3,7 @@
 ## OpenGrok release from official source:
 
 Directly downloaded from official source:
-https://github.com/OpenGrok/OpenGrok/releases/tag/${RELEASE}
+https://github.com/oracle/OpenGrok/releases/tag/${RELEASE}
 
 You can learn more about OpenGrok at http://oracle.github.io/opengrok/
 
