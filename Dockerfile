@@ -23,7 +23,7 @@ RUN apt install -y build-essential autoconf libtool gettext \
 	cd .. && rm -Rf ctags && apt clean
 
 #PREPARING OPENGROK BINARIES AND FOLDERS
-ARG OPENGROK_RELEASE="1.2.0"
+ARG OPENGROK_RELEASE="1.2.1"
 ADD https://github.com/oracle/OpenGrok/releases/download/${OPENGROK_RELEASE}/opengrok-${OPENGROK_RELEASE}.tar.gz /opengrok.tar.gz
 RUN tar -zxvf /opengrok.tar.gz && mv opengrok-* /opengrok && \
     mkdir /src && \
